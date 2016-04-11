@@ -12,7 +12,7 @@
 
         },
         //亮牌
-        showdown: function () {
+        showdown: function (userName, poker) {
 
         },
         //开始游戏
@@ -36,6 +36,39 @@
         updatePokers: function (o) {
 
         },
+        //初始化游戏
+        init: function () {
+            //将自己加入游戏
+            this.addUser('down-name', this.userName);
+            //监听新玩家加入游戏
+            this.socket.on('login', function (o) {
+                for(p in this.users) {
+                    if (this.users[p] == 0) {
+                        this.users[p] == 1;
+                        this.addUser(p, o);
+                        break;
+                    }
+                }
+            });
+            //监听玩家退出
+            this.socket.on('logout', function (o) {
+                this.updateUser(o);
+            });
+            //监听发牌
+            this.socket.on('deal', function (o) {
+                this.updatePokers(o);
+            });
+            //监听亮牌
+            this.socket.on('showdown', function (o) {
+                this.showdown(o.userName, o.poker);
+            });
+            //给按钮绑定事件
+            var game_start = document.getElementById('game-start');
+            document.getElementById('game-deal').onclick = this.deal;
+            document.getElementById('game-showdown').onclick = this.showdown;
+            game_start.style.display = "block";
+            game_start.onclick = this.start;
+        },
         //创建游戏
         createSubmit: function () {
             var userName = document.getElementById('userName-create').value;
@@ -48,26 +81,7 @@
                 this.socket = io.connect('ws://192.168.199.128:4110');
                 //通知服务器创建游戏
                 this.socket.emit('create', {userID:this.userID, userName:this.userName});
-                //将自己加入游戏
-                this.addUser('down-name', this.userName);
-                //监听新玩家加入游戏
-                this.socket.on('login', function (o) {
-                    for(p in this.users) {
-                        if (this.users[p] == 0) {
-                            this.users[p] == 1;
-                            this.addUser(p, o);
-                            break;
-                        }
-                    }
-                });
-                //监听玩家退出
-                this.socket.on('logout', function (o) {
-                    this.updateUser(o);
-                });
-                //监听发牌
-                this.socket.on('deal', function (o) {
-                    this.updatePokers(o);
-                });
+                this.init();
             }
             return false;
         },
@@ -83,26 +97,7 @@
                 this.socket = io.connect('ws://192.168.199.128:4110');
                 // 通知服务器加入游戏
                 this.socket.emit('login', {userID:this.userID, userName:this.userName});
-                //将自己加入游戏
-                this.addUser('down-name', this.userName);
-                //监听新玩家加入游戏
-                this.socket.on('login', function (o) {
-                    for(p in this.users) {
-                        if (this.users[p] == 0) {
-                            this.users[p] == 1;
-                            this.addUser(p, o);
-                            break;
-                        }
-                    }
-                });
-                //监听玩家退出
-                this.socket.on('logout', function (o) {
-                    this.updateUser(o);
-                });
-                //监听发牌
-                this.socket.on('deal', function (o) {
-                    this.updatePokers(o);
-                });
+                this.init();
             }
             return false;
         }

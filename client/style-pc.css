@@ -121,6 +121,26 @@ span.name {
 }
 /*右边玩家结束*/
 
+/*游戏操作选项*/
+#game-start {
+    position: absolute;
+    left: 50%;
+    width: 60px;
+    margin-left: -30px;
+    margin-top: -30px;
+    display: none;
+}
+
+.game-button {
+    position: absolute;
+    left: 50%;
+    width: 140px;
+    margin-left: -70px;
+    margin-top: -30px;
+    display: none;
+}
+/*游戏操作选项结束*/
+
 /*扑克牌*/
 .pokers {
     position: absolute;
