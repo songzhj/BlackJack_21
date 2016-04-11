@@ -1,0 +1,141 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+#create,
+#login,
+#game {
+    position: relative;
+    display: none;
+    width: 100%;
+}
+
+#create,
+#login {
+    background: #eee url("../images/bg-login.png")   center center no-repeat;
+}
+
+.title {
+    position: absolute;
+    width: 100px;
+    left: 50%;
+    top: 3%;
+    margin-left: -90px;
+    text-align: center;
+}
+
+.login {
+    position: absolute;
+    width: 300px;
+    height: 200px;
+    left: 50%;
+    top: 10%;
+    margin-left: -150px;
+    text-align: center;
+}
+
+.login input[type="text"] {
+    line-height: 1.6em;
+    width: 175px;
+}
+
+#game {
+    background: url("../images/bg-game.jpg") repeat;
+}
+
+span.name {
+    color: #fff;
+    font-size: 1.5em;
+}
+
+/*下方玩家*/
+#down {
+    position: absolute;
+    bottom: 3%;
+    left: 50%;
+    width: 300px;
+    height: 200px;
+    margin-left: -150px;
+}
+
+#down .name {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin-bottom: 10px;
+}
+/*下方玩家结束*/
+
+/*上方玩家*/
+#up {
+    position: absolute;
+    top: 3%;
+    left: 50%;
+    width: 300px;
+    height: 200px;
+    margin-left: -150px;
+}
+
+#up .name {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin-bottom: 10px;
+}
+/*上方玩家结束*/
+
+/*左边玩家*/
+#left {
+    position: absolute;
+    top: 50%;
+    left: 3%;
+    width: 300px;
+    height: 200px;
+    margin-top: -100px;
+}
+
+#left .name {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin-bottom: 10px;
+}
+/*左边玩家结束*/
+
+/*右边玩家*/
+#right {
+    position: absolute;
+    top: 50%;
+    right: 3%;
+    width: 300px;
+    height: 200px;
+    margin-top: -100px;
+}
+
+#right .name {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin-bottom: 10px;
+}
+/*右边玩家结束*/
+
+/*扑克牌*/
+.pokers {
+    position: absolute;
+    width: 300px;
+    height:170px;
+}
+
+.poker {
+    position: absolute;
+    background-image: url("../images/poker/back.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 80px;
+    height: 120px;
+    top: 50%;
+    margin-top: -60px;
+}
+/*扑克牌结束*/
