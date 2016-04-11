@@ -44,7 +44,7 @@
             this.socket.on('login', function (o) {
                 for(p in this.users) {
                     if (this.users[p] == 0) {
-                        this.users[p] == 1;
+                        this.users[p] = 1;
                         this.addUser(p, o);
                         break;
                     }
@@ -117,7 +117,6 @@
         document.getElementById('create-submit').onclick = GAME.createSubmit;
         document.getElementById('login-submit').onclick = GAME.loginSubmit;
     })();
-
 })();
 
 
