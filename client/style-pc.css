@@ -63,6 +63,7 @@ span.name {
     position: absolute;
     bottom: 0;
     left: 50%;
+    text-indent: -50px;
     margin-bottom: 10px;
 }
 /*下方玩家结束*/
@@ -81,6 +82,7 @@ span.name {
     position: absolute;
     bottom: 0;
     left: 50%;
+    text-indent: -50px;
     margin-bottom: 10px;
 }
 /*上方玩家结束*/
@@ -99,6 +101,7 @@ span.name {
     position: absolute;
     bottom: 0;
     left: 50%;
+    text-indent: -50px;
     margin-bottom: 10px;
 }
 /*左边玩家结束*/
@@ -117,6 +120,7 @@ span.name {
     position: absolute;
     bottom: 0;
     left: 50%;
+    text-indent: 50px;
     margin-bottom: 10px;
 }
 /*右边玩家结束*/
@@ -151,7 +155,6 @@ span.name {
 .poker {
     position: absolute;
     background-image: url("../images/poker/back.jpg");
-    background-repeat: no-repeat;
     background-size: cover;
     width: 80px;
     height: 120px;

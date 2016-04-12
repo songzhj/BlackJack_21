@@ -20,13 +20,13 @@
 
         },
         //获取玩家ID
-        getUid: function() {
-            return new Date().getTime() + "" + Math.floor(Math.random() * 100);
+        getID: function () {
+            return (new Date()).getTime() + "" + Math.floor(Math.random() * 100);
         },
         //添加玩家
-        addUser: function(id,o) {
+        addUser: function(id,userName) {
             var user = document.getElementById(id);
-            user.innerHTML = o.userName;
+            user.innerHTML = userName;
         },
         //修改玩家
         updateUser: function (o) {
@@ -75,13 +75,14 @@
             if (userName != "") {
                 document.getElementById('create').style.display = "none";
                 document.getElementById('game').style.display = "block";
-                this.userName = userName;
-                this.userID = this.getUid();
+                GAME.userName = userName;
+                GAME.userID = GAME.getID();
                 //连接后端服务器
-                this.socket = io.connect('ws://192.168.199.128:4110');
+                // this.socket = io.connect('ws://192.168.199.128:4110');
+                GAME.socket = io.connect('ws://localhost:4110');
+                GAME.init();
                 //通知服务器创建游戏
-                this.socket.emit('create', {userID:this.userID, userName:this.userName});
-                this.init();
+                GAME.socket.emit('create', {userID:GAME.userID, userName:GAME.userName});
             }
             return false;
         },
@@ -91,13 +92,13 @@
             if (userName != "") {
                 document.getElementById('login').style.display = "none";
                 document.getElementById('game').style.display = "block";
-                this.userName = userName;
-                this.userID = this.getUid();
+                GAME.userName = userName;
+                GAME.userID = GAME.getID();
                 //连接后端服务器
-                this.socket = io.connect('ws://192.168.199.128:4110');
+                GAME.socket = io.connect('ws://192.168.199.128:4110');
+                GAME.init();
                 // 通知服务器加入游戏
-                this.socket.emit('login', {userID:this.userID, userName:this.userName});
-                this.init();
+                GAME.socket.emit('login', {userID:GAME.userID, userName:GAME.userName});
             }
             return false;
         }
@@ -105,7 +106,7 @@
 
     //初始化,根据地址栏判断创建房间或加入房间.
     (function() {
-        var height = (window.screen.availHeight - 72) + "px";
+        var height = (window.screen.height - 72) + "px";
         document.getElementById('create').style.height = height;
         document.getElementById('login').style.height = height;
         document.getElementById('game').style.height = height;
@@ -116,6 +117,7 @@
         }
         document.getElementById('create-submit').onclick = GAME.createSubmit;
         document.getElementById('login-submit').onclick = GAME.loginSubmit;
+        GAME.userName;
     })();
 })();
 
