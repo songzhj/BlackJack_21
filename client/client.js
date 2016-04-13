@@ -17,7 +17,7 @@
         },
         //开始游戏
         start: function () {
-            GAME.emit('start');
+            GAME.emit('start', GAME.userID);
         },
         //开始游戏，发牌
         startGame: function (pokers) {
@@ -84,11 +84,9 @@
                 this.showdown(o.userName, o.poker);
             });
             //给按钮绑定事件
-            var game_start = document.getElementById('game-start');
+            document.getElementById('game-start').onclick = this.start;
             document.getElementById('game-deal').onclick = this.deal;
             document.getElementById('game-showdown').onclick = this.showdown;
-            game_start.style.display = "block";
-            game_start.onclick = this.start;
         },
         //创建游戏
         createSubmit: function () {
@@ -102,9 +100,11 @@
                 // this.socket = io.connect('ws://192.168.199.128:4110');
                 GAME.socket = io.connect('ws://localhost:4110');
                 GAME.init();
+                document.getElementById('game-start').style.display = 'block';
                 //通知服务器创建游戏
                 GAME.socket.emit('create', {userID:GAME.userID, userName:GAME.userName});
-                alert('复制链接邀请好友加入游戏：' + 'http://192.168.199.128/client/index.html?room=' + GAME.userID);
+                // alert('复制链接邀请好友加入游戏：' + 'http://192.168.199.128/client/index.html?room=' + GAME.userID);
+                alert('复制链接邀请好友加入游戏：' + 'http://localhost:63342/BlackJack_21/client/index.html?room=' + GAME.userID);
             }
             return false;
         },
