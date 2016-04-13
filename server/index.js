@@ -103,6 +103,7 @@ io.on('connection', function(socket){
          rooms[obj.roomID].users.push(user);
          console.log('login ' + obj.userName);
          io.emit('login', rooms[obj.roomID].users);
+         console.log(rooms[obj.roomID].users.length);
     });
     //监听开始游戏
     socket.on('start', function (id) {
@@ -124,6 +125,19 @@ io.on('connection', function(socket){
          }
          io.emit('start', pokers);
          io.emit('turn', users[0]);
+    });
+    //监听要牌
+    socket.on('deal', function (user) {
+         console.log(user.roomID);
+         var room = rooms[user.roomID];
+         var poker = deal(room);
+         for (var i = 0; i < room.users.length; ++i) {
+             if (room.users[i].id == user.userID) {
+                 room.users[i].pokers.push(poker);
+             }
+         }
+         io.emit('deal', {id:user.userID, poker:poker});
+         io.emit('turn', room.users[++room.turn % room.users.length]);
     });
 });
 server.listen(4110);
