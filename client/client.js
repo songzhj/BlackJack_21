@@ -17,19 +17,30 @@
         },
         //开始游戏
         start: function () {
-            GAME.emit('start', GAME.userID);
+            GAME.socket.emit('start', GAME.userID);
         },
         //开始游戏，发牌
         startGame: function (pokers) {
-            var arr = ['left-name', 'top-name', 'right-name'];
+            var arr = ['down-name', 'left-name', 'top-name', 'right-name'];
             for (var i = 0; i < arr.length; ++i) {
                 for (var j = 0; j < pokers.length; ++j) {
                     if (pokers[j].id == document.getElementById(arr[i]).getAttribute('data-id')) {
-                        var num1 = pokers[j].poker1.num, num2 = pokers[j].poker2.num;
-                        var color = pokers[j].poker2.color;
-                        var poker1 = '<div class="poker" data-poker="' + num1 + 'style="background-image: url(\"../image/poker/back.jpg\")">';
-                        var poker2 = '<div class="poker" data-poker="' + num2 + 'style="background-image: url(\"../image/poker/' + color + '/' + num + '\")">';
-                        document.querySelector('#' + arr[i].split('-')[0] + ' ' + 'pokers').innerHTML = poker1 + poker2;
+                        var poker1 = document.createElement('div');
+                        var poker2 = document.createElement('div');
+                        poker1.className = poker2.className = 'poker';
+                        poker1.setAttribute('data-num', pokers[j].poker1.num);
+                        poker2.setAttribute('data-num', pokers[j].poker2.num);
+                        if(pokers[j].id == this.userID) {
+                            poker1.style.backgroundImage = 'url("../images/poker/' + pokers[j].poker1.color + '/' + pokers[j].poker1.num + '.png")';
+                        } else {
+                            poker1.style.backgroundImage = 'url("../images/poker/back.jpg")';
+                        }
+                        poker2.style.backgroundImage = 'url("../images/poker/' + pokers[j].poker2.color + '/' + pokers[j].poker2.num + '.png")';
+                        poker2.style.marginLeft = '30px';
+                        var addPlace = document.querySelector('#' + arr[i].split('-')[0] + ' ' + '.pokers');
+                        addPlace.appendChild(poker1)
+                        addPlace.appendChild(poker2);
+                        pokers.splice(j, 1);
                         break;
                     }
                 }
@@ -69,19 +80,19 @@
             });
             //监听玩家退出
             this.socket.on('logout', function (user) {
-                this.updateUser(o);
+                GAME.updateUser(o);
             });
             //监听游戏开始
             this.socket.on('start', function (pokers) {
-                this.startGame(pokers);
+                GAME.startGame(pokers);
             });
             //监听发牌
             this.socket.on('deal', function (o) {
-                this.updatePokers(o);
+                GAME.updatePokers(o);
             });
             //监听亮牌
             this.socket.on('showdown', function (o) {
-                this.showdown(o.userName, o.poker);
+                GAME.showdown(o.userName, o.poker);
             });
             //给按钮绑定事件
             document.getElementById('game-start').onclick = this.start;
