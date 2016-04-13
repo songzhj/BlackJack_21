@@ -160,5 +160,6 @@ span.name {
     height: 120px;
     top: 50%;
     margin-top: -60px;
+    border: 1px solid black;
 }
 /*扑克牌结束*/

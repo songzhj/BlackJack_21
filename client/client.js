@@ -7,14 +7,14 @@
         userID: null,
         roomID: null,
         socket: null,
-        users: {'left-name': 0, 'up-name': 0, 'right-name': 0},
+        // users: {'left-name': 0, 'up-name': 0, 'right-name': 0},
         //发牌(继续要牌)
         deal: function () {
             GAME.socket.emit('deal', {userID:GAME.userID, roomID:GAME.roomID});
         },
         //亮牌
-        showdown: function (userName, poker) {
-
+        showdown: function () {
+            GAME.socket.emit('showdown', {userID:GAME.userID, roomID:GAME.roomID});
         },
         //开始游戏
         start: function () {
@@ -30,8 +30,8 @@
                         var poker1 = document.createElement('div');
                         var poker2 = document.createElement('div');
                         poker1.className = poker2.className = 'poker';
-                        poker1.setAttribute('data-num', pokers[j].poker1.num);
-                        poker2.setAttribute('data-num', pokers[j].poker2.num);
+                        // poker1.setAttribute('data-num', pokers[j].poker1.num);
+                        // poker2.setAttribute('data-num', pokers[j].poker2.num);
                         if(pokers[j].id == this.userID) {
                             poker1.style.backgroundImage = 'url("../images/poker/' + pokers[j].poker1.color + '/' + pokers[j].poker1.num + '.png")';
                         } else {
@@ -82,7 +82,7 @@
                     var addPlace = document.querySelector('#' + arr[i].split('-')[0] + ' ' + '.pokers');
                     var poker = document.createElement('div');
                     poker.className = 'poker';
-                    poker.setAttribute('data-num', o.poker.num);
+                    // poker.setAttribute('data-num', o.poker.num);
                     poker.style.backgroundImage = 'url("../images/poker/' + o.poker.color + '/' + o.poker.num + '.png")';
                     poker.style.marginLeft = (30 * addPlace.childElementCount) + 'px';
                     addPlace.appendChild(poker);
@@ -131,8 +131,44 @@
                 GAME.updatePokers(obj);
             });
             //监听亮牌
-            this.socket.on('showdown', function (o) {
-                GAME.showdown(o.userName, o.poker);
+            this.socket.on('showdown', function (obj) {
+                var arr = ['left-name', 'up-name', 'right-name'];
+                for (var i = 0; i < arr.length; ++i) {
+                    var temp = document.getElementById(arr[i]);
+                    if (temp != null && obj.id == temp.getAttribute('data-id')) {
+                        var addPlace = document.querySelector('#' + arr[i].split('-')[0] + ' ' + '.pokers');
+                        addPlace.removeChild(addPlace.firstElementChild);
+                        var poker = document.createElement('div');
+                        poker.className = 'poker';
+                        poker.style.backgroundImage = 'url("../images/poker/' + obj.poker.color + '/' + obj.poker.num + '.png")';
+                        poker.style.marginLeft = (30 * addPlace.childElementCount + 50) + 'px';
+                        addPlace.appendChild(poker);
+                        break;
+                    }
+                }
+                document.getElementsByClassName('game-button')[0].style.display = 'none';
+                var name = document.getElementsByClassName('name');
+                for (var i = 0; i < name.length; ++i) {
+                    if (name[i].getAttribute('data-id') == obj.id) {
+                        name[i].style.color = 'white';
+                    }
+                }
+            });
+            //监听游戏结束
+            this.socket.on('end', function (o) {
+                document.getElementsByClassName('game-button')[0].style.display = 'none';
+                var pokers = document.getElementsByClassName('pokers');
+                for (var i = 0; i < pokers.length; ++i) { //清空牌局
+                    pokers[i].innerHTML = '';
+                }
+                if(o.winner == '平局') {
+                    alert('存在相同的最高点数，不分胜负');
+                } else {
+                    alert(o.winner + "赢得本局");
+                }
+                if (GAME.userID == GAME.roomID) { //房主获得开始按钮
+                    document.getElementById('game-start').style.display = 'block';
+                }
             });
             //给按钮绑定事件
             document.getElementById('game-start').onclick = this.start;

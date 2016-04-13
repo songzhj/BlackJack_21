@@ -14,7 +14,7 @@ function Room(userID) {
     this.users = new Array();
     this.isPlaying = false; //该房间游戏是否开始
     this.playerLast = 0; //该房间内有权利要牌的玩家数量（未亮牌玩家）
-    this.turn = 0; //轮到谁要牌
+    this.turn = 1; //轮到谁要牌
 }
 /*玩家*/
 function User(id, name) {
@@ -80,6 +80,63 @@ function deal(room) {
     room.pokers[i].isDeal = true;
     return room.pokers[i];
 }
+/*游戏结束，计算赢家*/
+function gameEnd(room) {
+    //分别计算每个人分数的方法
+    var getScore = function (pokers) {
+          var score = 0;
+          for (var i = 0; i < pokers.length; ++i) {
+              var num = pokers[i].num;
+              // console.log('poker ' + num);
+              switch (num) {
+                  case 'J':
+                      num = 10;
+                      break;
+                  case 'Q':
+                      num = 10;
+                      break;
+                  case 'K':
+                      num = 10;
+                      break;
+              }
+              var A = 0;
+              if (num == 'A') { //A可以看作1或者10，需要稍后判断
+                  A++;
+              } else {
+                  score += num;
+              }
+          }
+          while (A > 0) {
+              if (score + 10 <= 21) {
+                  score += 10;
+                  A--;
+              } else {
+                  score += 1;
+                  A--;
+              }
+          }
+          return score;
+    };
+    var winner = '没有人', lastScore = 0;
+    for (var i = 0; i < room.users.length; ++i) {
+        var score = getScore(room.users[i].pokers);
+        if (lastScore < score && score <= 21) {
+            winner = room.users[i].name;
+            lastScore = score;
+        } else if (lastScore == getScore(room.users[i].pokers)) {
+            winner = '平局';
+        }
+    }
+    return winner;
+}
+/*下一个获得要牌权力的玩家*/
+function nextTurn(room) {
+    while(room.users[room.turn % room.users.length].showdown) { //已经亮牌的人没有要牌资格
+        room.turn++;
+    }
+    io.emit('turn', room.users[room.turn % room.users.length]);
+    room.turn++;
+}
 /*WebSocket连接*/
 io.on('connection', function(socket){
     console.log('connect');
@@ -110,10 +167,14 @@ io.on('connection', function(socket){
          var room = rooms[id];
          room.isPlaying = true;  //设置房间游戏进行中
          room.playerLast = room.users.length; //房间内仍有权力要牌的玩家（没有亮牌）
+         for (var i = 0; i < room.users.length; ++i) { //初始化玩家状态
+             room.users[i].showdown = false;
+             room.users[i].pokers = new Array();
+         }
          room.pokers = genPokers();  //生成一副新的牌
          var pokers = new Array();
          var users = room.users;
-         for (var i = 0; i < users.length; ++i) {
+         for (i = 0; i < users.length; ++i) {
              var poker1 = deal(room);
              var poker2 = deal(room);
              var newObj = new Object();
@@ -137,7 +198,28 @@ io.on('connection', function(socket){
              }
          }
          io.emit('deal', {id:user.userID, poker:poker});
-         io.emit('turn', room.users[++room.turn % room.users.length]);
+         nextTurn(room);
+    });
+
+    //监听亮牌
+    socket.on('showdown', function (user) {
+         var room = rooms[user.roomID];
+         room.playerLast--;
+         if (room.playerLast == 0) {
+             var winner = gameEnd(room);
+             io.emit('end', {winner:winner});
+             room.isPlaying = false;
+         } else {
+             for (var i = 0; i < room.users.length; ++i) {
+                 if (room.users[i].id == user.userID) {
+                     room.users[i].showdown = true;
+                     var firstPoker = room.users[i].pokers[0];
+                     io.emit('showdown', {poker:firstPoker, id:user.userID});
+                     break;
+                 }
+             }
+             nextTurn(room);
+         }
     });
 });
 server.listen(4110);
