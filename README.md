@@ -8,3 +8,6 @@
 ## 其它
 - 选择这个题目的原因，因为看起来很有趣，没有为什么。
 - 项目中存在着无数已发现的和未发现的BUG，后续可能会修改，并更新到GitHub；反正我也不保证会去修改。
+
+## License
+[MIT License](https://mit-license.org/)
