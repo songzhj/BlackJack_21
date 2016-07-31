@@ -10,4 +10,4 @@
 - 项目中存在着无数已发现的和未发现的BUG，后续可能会修改，并更新到GitHub；反正我也不保证会去修改。
 
 ## License
-[MIT License](https://mit-license.org/)
+[`MIT License`](https://mit-license.org/)
