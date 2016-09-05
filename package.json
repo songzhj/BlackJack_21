@@ -1,6 +1,6 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
+  "name": "blackjack_21",
+  "version": "0.0.2",
   "dependencies": {
     "socket.io": "latest"
   }

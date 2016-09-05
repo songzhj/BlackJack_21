@@ -192,7 +192,7 @@
                 //通知服务器创建游戏
                 GAME.socket.emit('create', {userID:GAME.userID, userName:GAME.userName});
                 // alert('复制链接邀请好友加入游戏：' + 'http://192.168.199.128/client/index.html?room=' + GAME.userID);
-                alert('复制链接邀请好友加入游戏：' + 'http://localhost:63342/BlackJack_21/client/index.html?room=' + GAME.userID);
+                alert('复制链接邀请好友加入游戏：' + 'http://localhost:63342/client/index.html?room=' + GAME.userID);
             }
             return false;
         },
